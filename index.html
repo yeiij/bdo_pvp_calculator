@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>BDO — AP & Accuracy vs DR & Evasion</title>
+<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=XIFyNikmLWWhqx3Ju0P1IHUOxejFFhTvlC_mdnxWkTdYQOmx_BwJjuZlrXje5Sdi3E7yKe5afZFhVqnKy3otS9Edqlmm9-VIwDBmI026oAC2-PB3YWmOqph-ZG0Pp3EjFHHvrUCxLqNrr-bbdTBItITR250zJlPzS0pANcYNJJnZMq_267EZ-c3SSpjruNJViv5EOCcIrcj9JqjVCtsTNKrjXb5YWpltln1k0kmOqkySNYpJmKhQWmilhXQ0Henz" charset="UTF-8"></script><style>
+  :root{--bg:#0f1115;--panel:#151923;--text:#e6ebf2;--muted:#9aa4b2;--accent:#6aa5ff;--ok:#6ee7b7;--radius:14px}
+  *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial}
+  body{margin:0;background:linear-gradient(180deg,#0c0f14,#0f1115);color:var(--text)}
+  .wrap{max-width:760px;margin:40px auto;padding:16px;text-align:center}
+  h1{font-size:24px;margin-bottom:20px}
+  .panel{background:var(--panel);border:1px solid #1f2633;border-radius:var(--radius);padding:20px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+  .row{display:grid;grid-template-columns:auto 1fr 90px;gap:10px;align-items:center;margin:10px 0}
+  label{white-space:nowrap;color:#cbd5e1;font-weight:600}
+  input[type="range"]{width:100%}
+  input[type="number"]{width:90px;padding:8px;border-radius:10px;border:1px solid #2a3244;background:#0b0f1a;color:var(--text)}
+  .section-title{margin-top:10px;font-weight:700;color:var(--accent);text-transform:uppercase;font-size:14px;letter-spacing:0.5px}
+  .vs{font-size:42px;font-weight:900;color:var(--ok);margin:8px 0}
+  .kpi{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px}
+  .k{position:relative;background:#0c1221;border:1px solid #1f2a44;border-radius:12px;padding:14px}
+  .kv{font-size:26px;font-weight:800}
+  .kt{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
+  .bar{height:10px;border-radius:99px;background:#10182a;overflow:hidden;margin-top:10px}
+  .bar span{display:block;height:100%;background:linear-gradient(90deg,#4f9cff,#6ee7b7);width:0%}
+  .goals{margin-top:16px;background:#0c1221;border:1px solid #1f2a44;border-radius:12px;padding:14px;text-align:left}
+  .goals-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .goal-row{display:grid;grid-template-columns:auto 90px;gap:8px;align-items:center}
+  .result{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .pill{display:inline-block;padding:4px 8px;border-radius:999px;border:1px solid #2a3244;background:#0b0f1a;color:#a6b3c5;font-size:12px}
+  button{cursor:pointer;background:#0b0f1a;border:1px solid #2b3b59;border-radius:10px;color:var(--text);padding:8px 10px;margin-top:12px}
+  .footer{margin-top:14px;color:#9aa4b2;font-size:12px}
+
+  /* Info button + popup */
+  .info-btn{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;
+            border-radius:50%;border:1px solid #2a3244;background:#0b0f1a;color:#cfe3ff;font-weight:700;
+            font-size:12px;line-height:0;cursor:pointer}
+  .popup{position:absolute;right:10px;top:36px;z-index:20;min-width:260px;max-width:320px;
+         background:#0b0f1a;border:1px solid #2a3244;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.4);
+         padding:12px;text-align:left;display:none}
+  .popup h4{margin:0 0 6px;font-size:14px}
+  .popup p{margin:6px 0;color:#a6b3c5;font-size:12px;line-height:1.35}
+  .popup table{width:100%;border-collapse:collapse;margin-top:6px;font-size:12px}
+  .popup th,.popup td{border-top:1px solid #223049;padding:6px 4px;text-align:left;color:#cdd6e3}
+  .tag{font-weight:700}
+  .tag.low{color:#fb7185}
+  .tag.mid{color:#fbbf24}
+  .tag.high{color:#6ee7b7}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>BDO — AP & Accuracy vs DR & Evasion</h1>
+  <div class="panel">
+
+    <div class="section-title">Your Stats</div>
+    <div class="row">
+      <label for="ap">AP</label>
+      <input type="range" id="ap" min="0" max="1200" step="1">
+      <input type="number" id="ap_n" min="0" max="1200" step="1">
+    </div>
+    <div class="row">
+      <label for="acc">Accuracy</label>
+      <input type="range" id="acc" min="0" max="2000" step="1">
+      <input type="number" id="acc_n" min="0" max="2000" step="1">
+    </div>
+
+    <div class="vs">VS</div>
+
+    <div class="section-title">Enemy Stats</div>
+    <div class="row">
+      <label for="dr">DR</label>
+      <input type="range" id="dr" min="0" max="1500" step="1">
+      <input type="number" id="dr_n" min="0" max="1500" step="1">
+    </div>
+    <div class="row">
+      <label for="eva">Evasion</label>
+      <input type="range" id="eva" min="0" max="2200" step="1">
+      <input type="number" id="eva_n" min="0" max="2200" step="1">
+    </div>
+
+    <div class="kpi">
+      <div class="k">
+        <div class="kt">AP vs DR effectiveness</div>
+        <div class="kv" id="apdr_v">—</div>
+        <div class="bar"><span id="apdr_bar"></span></div>
+      </div>
+      <div class="k">
+        <div class="kt">Hit chance (Accuracy vs Evasion)</div>
+        <div class="kv" id="acceva_v">—</div>
+        <div class="bar"><span id="acceva_bar"></span></div>
+      </div>
+      <div class="k">
+        <div class="kt">Effective Hit Multiplier (hit²)</div>
+        <div class="kv" id="hitmul_v">—</div>
+        <div class="bar"><span id="hitmul_bar"></span></div>
+      </div>
+      <div class="k" id="edi_card">
+        <div class="kt">
+          Effective Damage Index <b class="info-btn" id="edi_info_btn" aria-label="What is EDI?">?</b>
+        </div>
+        <div class="kv" id="effdmg_v">—</div>
+        <div class="bar"><span id="effdmg_bar"></span></div>
+
+        <!-- Popup -->
+        <div class="popup" id="edi_popup" role="dialog" aria-modal="false" aria-label="Effective Damage Index info">
+          <h4>Effective Damage Index (EDI)</h4>
+          <p><strong>Formula:</strong> <code>EDI = max(AP − DR, 0) × (Hit chance)²</code></p>
+          <p>It’s a <em>relative index</em> (not raw damage). It combines your surplus AP after enemy DR with the quadratic loss from misses/glancing hits.</p>
+          <table>
+            <thead><tr><th>Range</th><th>Meaning</th></tr></thead>
+            <tbody>
+              <tr><td><span class="tag low">Low &lt; 15</span></td><td>Low effective output; enemy evades/mitigates a lot.</td></tr>
+              <tr><td><span class="tag mid">Medium 15–40</span></td><td>Balanced fights; buffs/criticals matter.</td></tr>
+              <tr><td><span class="tag high">High &gt; 40</span></td><td>Consistent and threatening damage.</td></tr>
+            </tbody>
+          </table>
+          <p style="margin-top:6px">Tip: raising <strong>Accuracy</strong> boosts EDI fast because it increases <code>hit²</code>.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="goals">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+        <strong>Goals</strong>
+        <span class="pill">AP req = DR·t/(1−t) · ACC req = EVA·h/(1−h)</span>
+      </div>
+      <div class="goals-grid">
+        <div>
+          <div class="goal-row">
+            <label for="targetEff">Target AP vs DR (%)</label>
+            <input type="number" id="targetEff" min="1" max="95" step="1" value="60">
+          </div>
+          <div class="result" style="margin-top:8px">
+            <div><span class="kt">Required AP</span><div class="kv" id="req_ap">—</div></div>
+            <div><span class="kt">Δ AP (missing)</span><div class="kv" id="delta_ap">—</div></div>
+          </div>
+        </div>
+        <div>
+          <div class="goal-row">
+            <label for="targetHit">Target Hit chance (%)</label>
+            <input type="number" id="targetHit" min="10" max="100" step="1" value="65">
+          </div>
+          <div class="result" style="margin-top:8px">
+            <div><span class="kt">Required Accuracy</span><div class="kv" id="req_acc">—</div></div>
+            <div><span class="kt">Δ Accuracy (missing)</span><div class="kv" id="delta_acc">—</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button id="reset">Reset</button>
+    <div class="footer">
+      Hit chance = clamp((67 + 0.25·(Acc−Eva))/100, 0.10, 1.00) · AP% = AP/(AP+DR) · EDI = max(AP−DR,0)·hit²
+    </div>
+  </div>
+</div>
+
+<script>
+function clamp(x, lo, hi){ return Math.max(lo, Math.min(hi, x)); }
+
+const fields = [
+  {key:"ap",  min:0, max:1200, step:1, def:950},
+  {key:"acc", min:0, max:2000, step:1, def:1325},
+  {key:"dr",  min:0, max:1500, step:1, def:800},
+  {key:"eva", min:0, max:2200, step:1, def:1300},
+];
+
+const el = {};
+for (const f of fields){
+  el[f.key]    = document.getElementById(f.key);
+  el[f.key+"n"]= document.getElementById(f.key+"_n");
+  for (const e of [el[f.key], el[f.key+"n"]]){
+    e.min=f.min; e.max=f.max; e.step=f.step; e.value=f.def;
+  }
+  el[f.key].addEventListener("input", ()=>{ el[f.key+"n"].value=el[f.key].value; compute(); });
+  el[f.key+"n"].addEventListener("input", ()=>{ el[f.key].value=el[f.key+"n"].value; compute(); });
+}
+
+// Goals
+const targetEff = document.getElementById("targetEff");
+const targetHit = document.getElementById("targetHit");
+targetEff.addEventListener("input", compute);
+targetHit.addEventListener("input", compute);
+
+// Reset
+document.getElementById("reset").addEventListener("click", ()=>{
+  for (const f of fields){
+    el[f.key].value=f.def;
+    el[f.key+"n"].value=f.def;
+  }
+  targetEff.value = 60;
+  targetHit.value = 65;
+  compute();
+});
+
+// Outputs
+const out = {
+  apdr_v: document.getElementById("apdr_v"),
+  apdr_bar: document.getElementById("apdr_bar"),
+  acceva_v: document.getElementById("acceva_v"),
+  acceva_bar: document.getElementById("acceva_bar"),
+  hitmul_v: document.getElementById("hitmul_v"),
+  hitmul_bar: document.getElementById("hitmul_bar"),
+  effdmg_v: document.getElementById("effdmg_v"),
+  effdmg_bar: document.getElementById("effdmg_bar"),
+  req_ap: document.getElementById("req_ap"),
+  delta_ap: document.getElementById("delta_ap"),
+  req_acc: document.getElementById("req_acc"),
+  delta_acc: document.getElementById("delta_acc"),
+};
+
+// EDI popup
+const infoBtn = document.getElementById("edi_info_btn");
+const popup = document.getElementById("edi_popup");
+document.addEventListener("click",(e)=>{
+  if (e.target === infoBtn){
+    popup.style.display = (popup.style.display === "block" ? "none" : "block");
+  }else if (!popup.contains(e.target)){
+    popup.style.display = "none";
+  }
+});
+document.addEventListener("keydown",(e)=>{
+  if (e.key === "Escape") popup.style.display = "none";
+});
+
+function compute(){
+  const ap  = parseFloat(el.ap.value);
+  const dr  = parseFloat(el.dr.value);
+  const acc = parseFloat(el.acc.value);
+  const eva = parseFloat(el.eva.value);
+
+  // AP vs DR (%)
+  const apPct = (ap + dr) > 0 ? ap / (ap + dr) : 0;
+
+  // PvP hit chance
+  let hit = (67 + 0.25 * (acc - eva)) / 100;
+  hit = clamp(hit, 0.10, 1.00);
+  const hit2 = hit * hit;
+
+  // Effective Damage Index (relative)
+  const rawLinear = Math.max(ap - dr, 0);
+  const edi = rawLinear * hit2;
+
+  // KPIs
+  out.apdr_v.textContent   = (apPct*100).toFixed(2) + "%";
+  out.acceva_v.textContent = (hit*100).toFixed(2) + "%";
+  out.hitmul_v.textContent = (hit2*100).toFixed(2) + "%";
+  out.effdmg_v.textContent = edi.toFixed(2);
+
+  out.apdr_bar.style.width   = clamp(apPct*100, 0, 100) + "%";
+  out.acceva_bar.style.width = clamp(hit*100, 10, 100) + "%";
+  out.hitmul_bar.style.width = clamp(hit2*100, 1, 100) + "%";
+  const softCap = Math.max(ap + dr, 1);
+  out.effdmg_bar.style.width = clamp((edi / softCap) * 100, 0, 100) + "%";
+
+  // Goals
+  const t = clamp(parseFloat(targetEff.value)/100, 0.01, 0.95); // AP% goal
+  const h = clamp(parseFloat(targetHit.value)/100, 0.10, 1.00); // hit% goal (min 10% due to clamp)
+
+  const reqAP  = (dr > 0)  ? (dr * t) / (1 - t) : 0;                  // AP = DR*t/(1-t)
+  const reqACC = Math.max(0, eva + ((100*h - 67) / 0.25));            // invert hit formula
+
+  out.req_ap.textContent   = Math.round(reqAP).toString();
+  out.delta_ap.textContent = Math.max(0, Math.round(reqAP - ap)).toString();
+  out.req_acc.textContent  = Math.round(reqACC).toString();
+  out.delta_acc.textContent= Math.max(0, Math.round(reqACC - acc)).toString();
+}
+
+compute();
+</script>
+</body>
+</html>
