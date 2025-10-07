@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>BDO — AP & Accuracy vs DR & Evasion</title>
+<title>BDO — PvP Calculator</title>
 <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=XIFyNikmLWWhqx3Ju0P1IHUOxejFFhTvlC_mdnxWkTdYQOmx_BwJjuZlrXje5Sdi3E7yKe5afZFhVqnKy3otS9Edqlmm9-VIwDBmI026oAC2-PB3YWmOqph-ZG0Pp3EjFHHvrUCxLqNrr-bbdTBItITR250zJlPzS0pANcYNJJnZMq_267EZ-c3SSpjruNJViv5EOCcIrcj9JqjVCtsTNKrjXb5YWpltln1k0kmOqkySNYpJmKhQWmilhXQ0Henz" charset="UTF-8"></script><style>
   :root{--bg:#0f1115;--panel:#151923;--text:#e6ebf2;--muted:#9aa4b2;--accent:#6aa5ff;--ok:#6ee7b7;--radius:14px}
   *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial}
@@ -50,7 +50,7 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>BDO — AP & Accuracy vs DR & Evasion</h1>
+  <h1>BDO — PvP Calculator</h1>
   <div class="panel">
 
     <div class="section-title">Your Stats</div>
@@ -161,10 +161,10 @@
 function clamp(x, lo, hi){ return Math.max(lo, Math.min(hi, x)); }
 
 const fields = [
-  {key:"ap",  min:0, max:1200, step:1, def:950},
-  {key:"acc", min:0, max:2000, step:1, def:1325},
-  {key:"dr",  min:0, max:1500, step:1, def:800},
-  {key:"eva", min:0, max:2200, step:1, def:1300},
+  {key:"ap",  min:0, max:1200, step:1, def:1000},
+  {key:"acc", min:0, max:2000, step:1, def:1000},
+  {key:"dr",  min:0, max:1500, step:1, def:1000},
+  {key:"eva", min:0, max:2200, step:1, def:1000},
 ];
 
 const el = {};
